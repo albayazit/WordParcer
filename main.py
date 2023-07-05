@@ -41,19 +41,13 @@ def get_word():
 
     words = soup.find(class_="words_list").find_all("a")
 
-    # TEST COUNT - DELETE
-    count = 0
-
     for item in words:
-        if (count == 5):
-            break
         if (len(item.text) == 5):
             if ' ' in item.text or '-' in item.text:
                 continue
             else:
                 get_translate(item)
                 words_list.append(item.text)
-            count += 1
 
     return words_list
 
@@ -64,7 +58,11 @@ def get_translate(item):
     s.headers.update(HEADERS)
     response = s.get(url)
     soup = BS(response.text, "lxml")
-    data = soup.find(class_="search_results").text.split(" ")
+    try:
+        data = soup.find(class_="search_results").text.split(" ")
+    except:
+        print(item)
+        return
     second = False
     translated = 0
     for i in data:
@@ -93,14 +91,14 @@ def output():
             file.write(item + "\n")
 
 if __name__ == "__main__":
-    get_page("https://tatpoisk.net/dict/tat2rus/list/a")
+    get_page("https://tatpoisk.net/dict/tat2rus/list/ch")
     all_pages = get_all_pages()
-    # TEST COUNT - DELETE
-    count = 0
     for page in all_pages:
-        if count == 5:
-            break
-        get_page(page)
-        get_word()
-        count += 1
-    output()
+        try:
+            get_page(page)
+            get_word()
+        except:
+            print(f"Error in {page}")
+    get_word()
+    for item in TRANSLATED:
+        print(item)
