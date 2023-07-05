@@ -2,6 +2,19 @@ from requests import Session
 from bs4 import BeautifulSoup as BS
 
 
+def get_all_pages():
+    all_pages = []
+
+    with open("data.html") as file:
+        src = file.read()
+
+    soup = BS(src, "lxml")
+    pages_list = soup.find(class_="search").find_all("a")
+    for item in pages_list:
+        all_pages.append("https://tatpoisk.net" + item.get("href"))
+        if (len(all_pages) == 34):
+            break
+    print(all_pages)
 
 def get_page(URL):
     HEADERS = {
@@ -19,3 +32,4 @@ def get_page(URL):
 
 if __name__ == "__main__":
     get_page("https://tatpoisk.net/dict/tat2rus/list/a")
+    get_all_pages()
